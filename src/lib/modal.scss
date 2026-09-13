@@ -471,7 +471,7 @@ body.hub-modal-open {
 
 	&__header {
 		display: flex;
-		align-items: center;
+		align-items: var(--hub-modal-header-align-items, center);
 		gap: var(--hub-modal-header-gap, var(--hub-ref-space-2, 0.5rem));
 		padding: var(--hub-modal-header-padding-y, var(--hub-ref-space-3, 1rem))
 			var(--hub-modal-header-padding-x, var(--hub-ref-space-3, 1rem));
@@ -497,7 +497,25 @@ body.hub-modal-open {
 		);
 	}
 
-	// The heading is authored by the caller, not by this library, so it is matched by class.
+	// Everything the caller projects into the header lands in this box, and the close button
+	// follows it. Keeping those nodes in a box of their own is what lets a heading of two lines,
+	// a title over its subtitle, stack while the button stays beside it. The box takes whatever
+	// room the button leaves, so the button sits at the far end of the header in either writing
+	// direction, and `min-width: 0` lets a long title wrap instead of pushing the button out.
+	//
+	// The defaults (a centred row, spaced by the header's own gap) reproduce the layout the
+	// projected nodes had when they were the header's own children, so a one-line heading
+	// renders as it did.
+	&__heading {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: var(--hub-modal-heading-direction, row);
+		align-items: var(--hub-modal-heading-align-items, center);
+		gap: var(--hub-modal-heading-gap, var(--hub-modal-header-gap, var(--hub-ref-space-2, 0.5rem)));
+		min-width: 0;
+	}
+
+	// The title is authored by the caller, not by this library, so it is matched by class.
 	// `.modal-title` is the name every consumer already writes — it dates from when this
 	// library shipped on top of Bootstrap. `.hub-modal__title` is the name the rest of this
 	// stylesheet uses, and until 22.10.0 it got nothing: a consumer who never used Bootstrap

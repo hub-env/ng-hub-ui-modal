@@ -88,7 +88,7 @@ This library is part of the **ng-hub-ui** ecosystem:
 
 - **No UI framework underneath**: no ng-bootstrap, no Bootstrap JS. The one peer besides Angular is `ng-hub-ui-utils`, this family's own toolbox (focus boundaries, transitions), installed alongside the package.
 - **Three content types**: Open modals with a `TemplateRef`, a `Component` class, or a plain `string`.
-- **Flexible content projection**: Use CSS selectors to route content to `header`, `body`, and `footer` slots.
+- **Flexible content projection**: Use CSS selectors to route content to `header`, `body`, and `footer` slots. The header's nodes share one box, which CSS variables can turn into a column for a title with its subtitle.
 - **Placement support**: Anchor modals to any viewport edge — `start`, `end`, `top`, `bottom` — or keep them `center`.
 - **Modal stacking**: Open multiple modals; focus management and aria-hidden are handled automatically.
 - **Programmatic dismiss/close guards**: The `beforeDismiss` callback lets you intercept and prevent dismissal.
@@ -610,7 +610,7 @@ All options accepted by `HubModal.open()`. Generic in the payload type —
 | `windowClass`      | `string`                                                              | —                        | Extra class added to the `hub-modal` host element.                                                                                                                                                                                                                                                                                |
 | `modalDialogClass` | `string`                                                              | —                        | Extra class added to the `hub-modal__dialog` element.                                                                                                                                                                                                                                                                             |
 | `backdropClass`    | `string`                                                              | —                        | Extra class added to the `hub-modal__backdrop` element.                                                                                                                                                                                                                                                                           |
-| `headerSelector`   | `string`                                                              | —                        | CSS selector for nodes to project into the header slot.                                                                                                                                                                                                                                                                           |
+| `headerSelector`   | `string`                                                              | —                        | CSS selector for nodes to project into the header slot. They land in `.hub-modal__heading`, beside the built-in close button.                                                                                                                                                                                                     |
 | `footerSelector`   | `string`                                                              | —                        | CSS selector for nodes to project into the footer slot.                                                                                                                                                                                                                                                                           |
 | `bodySelector`     | `string`                                                              | —                        | CSS selector for nodes to project into the body slot. Without it the body is whatever the other slots left behind; with it the body is placed deliberately, and anything unclaimed still follows it.                                                                                                                              |
 | `dismissSelector`  | `string`                                                              | `[data-dismiss="modal"]` | Selector for elements that auto-dismiss the modal on click.                                                                                                                                                                                                                                                                       |
@@ -740,6 +740,47 @@ hub-modal-window {
 }
 ```
 
+### Header Layout
+
+What `headerSelector` projects lands in `.hub-modal__heading`, a flex box that sits before the
+close button and takes the room the button leaves. Four variables lay it out, and like every other
+dialog token they go on the dialog: `.hub-modal`, `hub-modal-window` or your `windowClass`.
+
+| Variable                          | Default                       | Description                                                                                              |
+| --------------------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `--hub-modal-heading-direction`   | `row`                         | Direction of the projected nodes. `column` stacks them.                                                  |
+| `--hub-modal-heading-align-items` | `center`                      | Their cross-axis alignment. A `column` heading usually wants `stretch`, so each line starts at the edge. |
+| `--hub-modal-heading-gap`         | `var(--hub-modal-header-gap)` | Space between them. Follows the header's gap until you set it.                                           |
+| `--hub-modal-header-align-items`  | `center`                      | How the heading and the close button line up. `flex-start` pins the button to the top.                   |
+
+The defaults give one centred row, which suits a title on its own or a title with a badge beside
+it. For a title with a subtitle under it, stack the heading and pin the close button to the top:
+
+```scss
+/* Global stylesheet: the dialog is appended to the document body, outside your component. */
+.titled-dialog {
+	--hub-modal-heading-direction: column;
+	--hub-modal-heading-align-items: stretch;
+	--hub-modal-heading-gap: 0.25rem;
+	--hub-modal-header-align-items: flex-start;
+}
+
+.dialog-subtitle {
+	margin: 0;
+}
+```
+
+```html
+<div hubModalHeader>
+	<h5 class="hub-modal__title">Edit customer</h5>
+	<p class="dialog-subtitle">Changes are saved when you press Save.</p>
+</div>
+```
+
+```typescript
+this.modal.open(EditCustomerComponent, { windowClass: 'titled-dialog', headerSelector: '[hubModalHeader]' });
+```
+
 ### Semantic Variants
 
 Set `variant` to give a dialog a semantic accent (a destructive confirm, a success notice…). A variant recolours the whole dialog: an accent-tinted background, accent-tinted borders (outer + header/footer rules) and an accent title. A top accent bar comes with it but ships at zero width — set `--hub-modal-accent-bar-width` to turn it on.
@@ -835,6 +876,7 @@ hub-modal-window {
 | `.hub-modal__dialog`             | Dialog container      |
 | `.hub-modal__content`            | Content wrapper       |
 | `.hub-modal__header`             | Header region         |
+| `.hub-modal__heading`            | Projected header box  |
 | `.hub-modal__body`               | Body region           |
 | `.hub-modal__footer`             | Footer region         |
 | `.hub-modal__close`              | Built-in close button |

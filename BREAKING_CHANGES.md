@@ -6,6 +6,61 @@ The major version tracks the Angular major this library targets, so it cannot al
 breaking change ships in a **minor** release and is announced here. This file — not the version
 number — is the warning.
 
+## [22.12.0] - 2026-09-13
+
+### Projected header nodes move into `.hub-modal__heading`
+
+- **Change**: the nodes `headerSelector` projects are children of a new element,
+  `.hub-modal__heading`, instead of direct children of `.hub-modal__header`. The header now holds two
+  children, always in this order: the heading, then the close button. The heading is a flex box that
+  takes the room the button leaves, and its defaults lay the nodes out the way the header did, in a
+  centred row spaced by `--hub-modal-header-gap`.
+
+- **Impact 1 — selectors on the header's direct children stop matching.** `.hub-modal__header > h5`,
+  `.hub-modal__header > :first-child` and the like no longer reach a projected node, because the
+  header's first child is now the heading. Descendant selectors are unaffected, which is why the
+  library's own `.hub-modal__header .modal-title` and `.hub-modal__header .hub-modal__title` keep
+  working. The same applies to scripts and tests that walk the header's `children` or read its
+  `firstElementChild`.
+
+- **Impact 2 — flex properties on a projected node now resolve inside the heading.** The node is a
+  flex item of the heading, so it no longer shares a line with the close button, and auto margins
+  are where that shows. A title with `margin-right: auto` or an action with `margin-left: auto`
+  (Bootstrap's `ms-auto`) used to split the free space with the close button's own
+  `margin-left: auto`, which left the action somewhere in the middle of the header. The heading takes
+  all of that space now, so the action ends up at the far end, next to the close button: on an `lg`
+  dialog with a title and one button, measured in Chromium, the button moved 189px to the right. For
+  the same reason `order` can no longer put a node after the close button, and `align-self` aligns a
+  node within the heading rather than the header.
+
+- **Impact 3 — right to left, the close button moves to the far end.** It used to stay next to the
+  title, because its `margin-left: auto` took the free space on the side that, in RTL, faces the end
+  of the header. It now sits at the end, as it does left to right.
+
+- **If you do nothing**: a header outside the three cases above renders as it did. Rendered in
+  Chromium against the previous stylesheet, twelve configurations kept every box within half a pixel:
+  a lone `modal-title` or `hub-modal__title`, a lone title carrying its own `margin-right: auto`, a
+  title with a badge and a button at the default and the `lg` size, a title that wraps, a title with
+  its subtitle, the two of them wrapped in one `<div>`, a `danger` variant, a 2rem header gap, a
+  fullscreen dialog and a header with nothing projected into it. A selector from Impact 1 simply
+  stops matching; nothing throws.
+
+- **Migration**:
+
+    1. Search your styles and tests for `hub-modal__header >`. Retarget each rule to
+       `.hub-modal__heading > …`, or drop the `>` if a descendant selector is what you meant.
+    2. Look for auto margins, `order` or `align-self` on anything you project into the header,
+       Bootstrap's `ms-auto` and `me-auto` included, and check that the result is still the layout you
+       want. Actions grouped at the end, next to the close button, usually are.
+    3. If you had moved a subtitle out of the header to keep it from squeezing the title, you can move
+       it back: `--hub-modal-heading-direction: column` on your window class stacks it under the title.
+       The README shows it with the other three variables.
+
+- **Why**: as long as the projected nodes were flex items of the header, no variable could lay them
+  out apart from the close button. A subtitle always sat beside its title and pushed it onto two
+  lines, and the only way out was taking the subtitle out of the header altogether. A box of their
+  own is what lets a variable decide their direction, gap and alignment.
+
 ## [22.11.0] - 2026-09-06
 
 ### Announced: `HubModalModule` is removed in 23.0.0

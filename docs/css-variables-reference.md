@@ -69,6 +69,10 @@ Applied only when a `variant` is set (e.g. `{ variant: 'danger' }` or `windowCla
 | `--hub-modal-header-gap` | `var(--hub-ref-space-2, 0.5rem)` |
 | `--hub-modal-header-border-color` | `var(--hub-sys-border-color-default, #dee2e6)` |
 | `--hub-modal-header-border-width` | `var(--hub-ref-border-width, 1px)` |
+| `--hub-modal-header-align-items` | `center` |
+| `--hub-modal-heading-direction` | `row` |
+| `--hub-modal-heading-align-items` | `center` |
+| `--hub-modal-heading-gap` | `var(--hub-modal-header-gap, var(--hub-ref-space-2, 0.5rem))` |
 | `--hub-modal-title-font-size` | `var(--hub-ref-font-size-lg, 1.25rem)` |
 | `--hub-modal-title-font-weight` | `var(--hub-ref-font-weight-medium, 500)` |
 | `--hub-modal-title-line-height` | `var(--hub-ref-line-height-base, 1.5)` |

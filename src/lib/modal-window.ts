@@ -57,7 +57,8 @@ import { HubModalPlacement } from './modal-placement';
 				@if (singleContent) {
 					<div #bodyContainer class="hub-modal__body"></div>
 				} @else {
-					<div #headerContainer class="hub-modal__header">
+					<div class="hub-modal__header">
+						<div #headingContainer class="hub-modal__heading"></div>
 						<button
 							#closeButton
 							type="button"
@@ -90,7 +91,7 @@ export class HubModalWindow implements OnInit, OnDestroy {
 	private _elWithFocus: Element | null = null; // element that is focused prior to modal opening
 
 	private readonly _dialogEl = viewChild.required<ElementRef<HTMLElement>>('dialog');
-	private readonly _headerContainerEl = viewChild<ElementRef<HTMLElement>>('headerContainer');
+	private readonly _headingContainerEl = viewChild<ElementRef<HTMLElement>>('headingContainer');
 	private readonly _bodyContainerEl = viewChild<ElementRef<HTMLElement>>('bodyContainer');
 	private readonly _footerContainerEl = viewChild<ElementRef<HTMLElement>>('footerContainer');
 	private readonly _closeButtonEl = viewChild<ElementRef<HTMLButtonElement>>('closeButton');
@@ -280,6 +281,10 @@ export class HubModalWindow implements OnInit, OnDestroy {
 	 * Attaches the projected content nodes into their respective structural containers
 	 * (header, body, and footer) within the modal dialog.
 	 *
+	 * Header nodes go into the heading container, which sits inside the header next to the
+	 * close button. The heading's direction, gap and alignment therefore apply to them alone,
+	 * and the button stays the header's last child whatever the caller projects.
+	 *
 	 * @param contentNodes A nested array containing nodes segmented into header, body, and footer parts.
 	 */
 	attachContent([headerNodes, bodyNodes, footerNodes]: Node[][]): void {
@@ -293,12 +298,11 @@ export class HubModalWindow implements OnInit, OnDestroy {
 			return;
 		}
 
-		const headerContainer = this._headerContainerEl()?.nativeElement;
+		const headingContainer = this._headingContainerEl()?.nativeElement;
 		const footerContainer = this._footerContainerEl()?.nativeElement;
-		const closeButton = this._closeButtonEl()?.nativeElement ?? null;
 
-		if (headerContainer) {
-			this._appendNodes(headerContainer, headerNodes, closeButton);
+		if (headingContainer) {
+			this._appendNodes(headingContainer, headerNodes);
 		}
 		this._appendNodes(bodyContainer, bodyNodes);
 		if (footerContainer) {
@@ -580,13 +584,14 @@ export class HubModalWindow implements OnInit, OnDestroy {
 		}
 	}
 
-	private _appendNodes(container: HTMLElement, nodes: Node[], beforeNode?: Node | null) {
-		nodes.forEach((node) => {
-			if (beforeNode) {
-				container.insertBefore(node, beforeNode);
-			} else {
-				container.appendChild(node);
-			}
-		});
+	/**
+	 * Moves each node, in order, to the end of a slot container. `appendChild` takes a node out
+	 * of wherever it is, so the caller's content leaves its original host as it lands here.
+	 *
+	 * @param container The slot element receiving the nodes.
+	 * @param nodes The nodes collected for that slot.
+	 */
+	private _appendNodes(container: HTMLElement, nodes: Node[]): void {
+		nodes.forEach((node) => container.appendChild(node));
 	}
 }

@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## [22.12.0] - 2026-09-13
+
+### Added
+
+- **The nodes projected into the header get a box of their own, laid out by four new variables.**
+  Whatever `headerSelector` brings in now lands in `.hub-modal__heading`, which sits before the
+  close button and takes the room the button leaves. The box reads `--hub-modal-heading-direction`
+  (default `row`), `--hub-modal-heading-align-items` (`center`) and `--hub-modal-heading-gap` (the
+  header's own gap), and the header itself now reads `--hub-modal-header-align-items` (`center`).
+  Setting `column` on the window class stacks a subtitle under its title, and `flex-start` on the
+  header pins the close button to the top of that two-line heading. Neither was possible before: the
+  projected nodes were flex items of the header, so a subtitle sat beside its title and squeezed it
+  onto two lines, and no variable could move it.
+
+### Changed
+
+- **Projected header nodes sit one level deeper in the DOM.** They are children of
+  `.hub-modal__heading` now, not of `.hub-modal__header`, and the close button is always the
+  header's last child. With the defaults nothing moves: twelve header configurations rendered in
+  Chromium against the previous stylesheet kept every box within half a pixel. What does move is
+  listed in `BREAKING_CHANGES.md` — selectors written against the header's direct children, and auto
+  margins on a projected node, which now resolve inside the heading and push that node to the end,
+  next to the close button.
+
+### Fixed
+
+- **In a right-to-left document the close button sat next to the title.** Its `margin-left: auto`
+  takes the free space on its left, and right to left that is the side facing the end of the header,
+  so the button never reached the end. The heading now takes that space and the button sits at the
+  far end in either direction. A title too long to wrap, such as a URL, also stops pushing the button
+  past the edge of the dialog.
+
 ## [22.11.1] - 2026-09-08
 
 ### Added

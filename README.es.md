@@ -68,7 +68,7 @@ Esta librería forma parte del ecosistema **ng-hub-ui**:
 
 - **Sin framework de UI debajo**: sin ng-bootstrap, sin Bootstrap JS. El único peer aparte de Angular es `ng-hub-ui-utils`, la caja de herramientas de esta familia (límites de foco, transiciones), que se instala junto al paquete.
 - **Tres tipos de contenido**: abre modales con `TemplateRef`, clase `Component` o `string`.
-- **Proyección de contenido flexible**: usa selectores CSS para enrutar nodos a los slots `header`, `body` y `footer`.
+- **Proyección de contenido flexible**: usa selectores CSS para enrutar nodos a los slots `header`, `body` y `footer`. Los nodos de la cabecera comparten una caja que las variables CSS pueden convertir en columna, para un título con su subtítulo debajo.
 - **Soporte de placement**: ancla el modal a cualquier borde del viewport — `start`, `end`, `top`, `bottom` — o mantenlo centrado.
 - **Apilamiento de modales**: múltiples modales abiertos simultáneamente con gestión automática del foco y `aria-hidden`.
 - **Guards de cierre programáticos**: el callback `beforeDismiss` permite interceptar y cancelar el cierre.
@@ -449,7 +449,7 @@ Genérico en el tipo del payload — `HubModalOptions<D = unknown>` tipa la opci
 | `windowClass`      | `string`                                                              | —                        | Clase extra en el host `.hub-modal`.                                                                                                                                                                                                                                                                                                                                |
 | `modalDialogClass` | `string`                                                              | —                        | Clase extra en `.hub-modal__dialog`.                                                                                                                                                                                                                                                                                                                                |
 | `backdropClass`    | `string`                                                              | —                        | Clase extra en `.hub-modal__backdrop`.                                                                                                                                                                                                                                                                                                                              |
-| `headerSelector`   | `string`                                                              | —                        | Selector CSS para nodos del slot de cabecera.                                                                                                                                                                                                                                                                                                                       |
+| `headerSelector`   | `string`                                                              | —                        | Selector CSS para nodos del slot de cabecera. Se colocan en `.hub-modal__heading`, junto al botón de cierre que dibuja la librería.                                                                                                                                                                                                                                 |
 | `footerSelector`   | `string`                                                              | —                        | Selector CSS para nodos del slot de pie.                                                                                                                                                                                                                                                                                                                            |
 | `bodySelector`     | `string`                                                              | —                        | Selector CSS del bloque cuyos hijos forman el cuerpo. Sin él, el cuerpo es lo que dejan la cabecera y el pie; con él se coloca a propósito, y lo que no reclame ningún hueco sigue yendo detrás.                                                                                                                                                                    |
 | `dismissSelector`  | `string`                                                              | `[data-dismiss="modal"]` | Selector para elementos que descartan el modal al hacer clic.                                                                                                                                                                                                                                                                                                       |
@@ -566,6 +566,49 @@ hub-modal-window {
 }
 ```
 
+### Disposición de la cabecera
+
+Lo que proyecta `headerSelector` va a parar a `.hub-modal__heading`, una caja flex que se coloca
+antes del botón de cierre y ocupa el espacio que este deja libre. Cuatro variables la disponen, y
+como cualquier otro token del diálogo se asignan en el diálogo: `.hub-modal`, `hub-modal-window` o
+tu `windowClass`.
+
+| Variable                          | Default                       | Descripción                                                                                                                |
+| --------------------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `--hub-modal-heading-direction`   | `row`                         | Dirección de los nodos proyectados. `column` los apila.                                                                    |
+| `--hub-modal-heading-align-items` | `center`                      | Su alineación en el eje transversal. Una caja en `column` suele pedir `stretch`, para que cada línea arranque en el borde. |
+| `--hub-modal-heading-gap`         | `var(--hub-modal-header-gap)` | Espacio entre ellos. Sigue al gap de la cabecera mientras no le des valor.                                                 |
+| `--hub-modal-header-align-items`  | `center`                      | Cómo se alinean la caja y el botón de cierre. `flex-start` fija el botón arriba.                                           |
+
+Los valores por defecto dan una sola fila centrada, que es lo que pide un título solo o un título con
+una insignia al lado. Para un título con un subtítulo debajo, apila la caja y fija arriba el botón de
+cierre:
+
+```scss
+/* Hoja global: el diálogo se añade al body del documento, fuera de tu componente. */
+.titled-dialog {
+	--hub-modal-heading-direction: column;
+	--hub-modal-heading-align-items: stretch;
+	--hub-modal-heading-gap: 0.25rem;
+	--hub-modal-header-align-items: flex-start;
+}
+
+.dialog-subtitle {
+	margin: 0;
+}
+```
+
+```html
+<div hubModalHeader>
+	<h5 class="hub-modal__title">Editar cliente</h5>
+	<p class="dialog-subtitle">Los cambios se guardan al pulsar Guardar.</p>
+</div>
+```
+
+```typescript
+this.modal.open(EditCustomerComponent, { windowClass: 'titled-dialog', headerSelector: '[hubModalHeader]' });
+```
+
 ### Variantes semánticas
 
 Usa `variant` para dar a un diálogo un acento semántico (una confirmación destructiva, un aviso de éxito…). Una variante recolorea todo el diálogo: un fondo tintado con el acento, bordes tintados (exterior + reglas de cabecera/pie) y un título con el color del acento. La barra de acento superior viene incluida, pero con grosor cero: ponle un valor a `--hub-modal-accent-bar-width` para encenderla.
@@ -661,6 +704,7 @@ hub-modal-window {
 | `.hub-modal__dialog`             | Contenedor del diálogo           |
 | `.hub-modal__content`            | Envoltorio del contenido         |
 | `.hub-modal__header`             | Región de cabecera               |
+| `.hub-modal__heading`            | Contenido proyectado en cabecera |
 | `.hub-modal__body`               | Región de cuerpo                 |
 | `.hub-modal__footer`             | Región de pie                    |
 | `.hub-modal__close`              | Botón de cierre de la librería   |

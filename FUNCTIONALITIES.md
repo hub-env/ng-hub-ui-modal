@@ -49,6 +49,7 @@ This table details the functionalities of the `ng-hub-ui-modal` library and indi
 | :--------- | :-------------------------------------------------------------------- | :-------------: |
 | **Tokens** | `--hub-modal-*` overrides scoped with `windowClass` / `backdropClass` |       ✅        |
 |            | Derived tokens follow their parent on the dialog element              |       ✅        |
+|            | Heading layout: `--hub-modal-heading-*` / `-header-align-items`       |       ❌        |
 | **Accent** | Accent roles (`-emphasis`, `-subtle`, `-on`, `-border`)               |       ✅        |
 |            | Custom accent in one rule (`.hub-modal--brand`)                       |       ✅        |
 |            | `--hub-modal-accent-bar-width` — the opt-in top bar (ships at `0`)    |       ❌        |
