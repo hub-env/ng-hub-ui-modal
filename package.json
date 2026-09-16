@@ -33,12 +33,12 @@
 	"description": "Standalone, signal-based modal/dialog service and components for Angular (ng-hub-ui family).",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/carlos-morcillo/ng-hub-ui-modal.git"
+		"url": "git+https://github.com/hub-env/ng-hub-ui-modal.git"
 	},
 	"author": "Carlos Morcillo <carlos.morcillo@me.com> (https://www.carlosmorcillo.com)",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/carlos-morcillo/ng-hub-ui-modal/issues"
+		"url": "https://github.com/hub-env/hub-ui/issues"
 	},
 	"homepage": "https://hubui.dev/en/modal/overview/"
 }

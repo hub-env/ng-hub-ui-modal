@@ -20,6 +20,7 @@ This package is part of [Hub UI](https://hubui.dev/en/), a collection of Angular
 - Docs: https://hubui.dev/en/modal/overview/
 - Live examples: https://hubui.dev/en/modal/examples/
 - Hub UI: https://hubui.dev/en/
+- Hub UI on GitHub (issues, roadmap and contributing): https://github.com/hub-env/hub-ui
 
 ---
 
@@ -901,7 +902,7 @@ during server rendering, guard the call yourself.
 ### Development Setup
 
 ```bash
-git clone https://github.com/carlos-morcillo/ng-hub-ui-modal.git
+git clone https://github.com/hub-env/ng-hub-ui-modal.git
 cd ng-hub-ui-modal
 npm install
 ```

@@ -20,6 +20,7 @@ Este paquete forma parte de [Hub UI](https://hubui.dev/en/), una colección de b
 - Documentación: https://hubui.dev/en/modal/overview/
 - Ejemplos en vivo: https://hubui.dev/en/modal/examples/
 - Hub UI: https://hubui.dev/en/
+- Hub UI en GitHub (incidencias, roadmap y cómo contribuir): https://github.com/hub-env/hub-ui
 
 ---
 
@@ -727,7 +728,7 @@ durante el renderizado en servidor, pon tú la guarda.
 ## Contribuciones
 
 ```bash
-git clone https://github.com/carlos-morcillo/ng-hub-ui-modal.git
+git clone https://github.com/hub-env/ng-hub-ui-modal.git
 npm install
 ng build modal --watch   # compilar en modo observador
 ng serve                 # aplicación de demo
