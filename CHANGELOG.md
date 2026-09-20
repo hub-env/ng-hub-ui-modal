@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [22.14.1] - 2026-09-20
+
+### Changed
+
+- The npm keywords declare `ng-hub-ui`, the family name, and add `signals` and `standalone`.
+  Metadata only: no code, types or styles change.
+
 ## [22.14.0] - 2026-09-20
 
 ### Added
