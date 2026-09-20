@@ -35,6 +35,7 @@ This table details the functionalities of the `ng-hub-ui-modal` library and indi
 |                   | `bodySelector`                                               |       ✅        |
 |                   | `dismissSelector` / `closeSelector`                          |       ❌        |
 |                   | `closeAriaLabel` — name of the built-in close button         |       ✅        |
+|                   | `closeButton: false` — no dismiss button in the header       |       ✅        |
 | **Behavior**      | `backdrop` (true, false, 'static')                           |       ✅        |
 |                   | `keyboard` (Esc to close)                                    |       ✅        |
 |                   | `closeOnNavigation` (closes when the URL changes)            |       ✅        |

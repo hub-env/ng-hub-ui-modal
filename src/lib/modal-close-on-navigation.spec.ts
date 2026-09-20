@@ -39,6 +39,34 @@ describe('closing on navigation', () => {
 		await expect(reason).resolves.toBe(ModalDismissReasons.NAVIGATION);
 	});
 
+	/**
+	 * A fragment moves the reader inside the screen the dialog belongs to; it does not replace it.
+	 * The project's own documentation site is the proof this needed a test: its sidebar writes the
+	 * anchor of whatever section is on screen as the reader scrolls, so every dialog closed itself
+	 * a moment after being opened, and the scroll that did it was nowhere near the dialog.
+	 */
+	it('ignores a change that only moves the anchor', async () => {
+		location.go('/a-screen');
+		const settled = vi.fn();
+		open().result.then(settled, settled);
+
+		location.go('/a-screen#a-section');
+		await Promise.resolve();
+
+		expect(settled).not.toHaveBeenCalled();
+	});
+
+	it('still dismisses when the path changes under an anchored URL', async () => {
+		location.go('/a-screen#a-section');
+		const reason = open()
+			.result.then(() => 'closed')
+			.catch((dismissal) => dismissal);
+
+		location.go('/another-screen#a-section');
+
+		await expect(reason).resolves.toBe(ModalDismissReasons.NAVIGATION);
+	});
+
 	it('leaves the dialog alone when the consumer opts out', async () => {
 		const settled = vi.fn();
 		open(false).result.then(settled, settled);

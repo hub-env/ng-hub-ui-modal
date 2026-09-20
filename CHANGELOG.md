@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+## [22.14.0] - 2026-09-20
+
+### Added
+
+- **`closeButton: false`, for a dialog there is no free way out of.** The header always drew
+  its dismiss button, so a consumer that could not offer one hid it with a rule of its own —
+  and hiding is not removing: the button stayed in the DOM, where a screen reader still
+  announces it and the tab order still reaches it, so the dialog kept offering an exit it did
+  not have. It is now left out of the template. The option governs that button alone;
+  `backdrop: 'static'` and `keyboard: false` are the other two ways out, each still its own
+  decision.
+
+### Fixed
+
+- **A change of anchor no longer closes the dialog.** `closeOnNavigation` counted every URL
+  change, a fragment included, so a sidebar that writes the anchor of the section on screen as
+  the reader scrolls — this project's own documentation site does exactly that — closed dialogs
+  a moment after they opened, and the scroll that did it was nowhere near them. An anchor moves
+  the reader inside the screen the dialog belongs to; only a change of path or query string
+  replaces that screen, and only those dismiss now.
+
+- **A dialog opened over another no longer floats on an undimmed page.** Every dialog was
+  painted at the same height and so was every backdrop, so the second backdrop landed _under_
+  the first dialog: what the new dialog covered still looked reachable, and a click on it
+  reached the dialog below. Each level is now lifted two steps as it is attached — the
+  backdrop one, its dialog two — so a backdrop always sits between the dialog underneath and
+  its own. The first dialog is left untouched, so an application that themed
+  `--hub-modal-zindex` keeps it; `--hub-modal-zindex-base` is the new floor the levels are
+  counted from, and theming that one moves them all. **A consumer carrying the usual sibling
+  selector for this can delete it** — its specificity beats the library's, so until it goes
+  it is still the one deciding.
+
 ## [22.13.0] - 2026-09-20
 
 ### Added

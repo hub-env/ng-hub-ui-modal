@@ -23,6 +23,18 @@ import { HUB_MODAL_DATA, HubActiveModal, HubModalRef } from './modal-ref';
 import { HubModalWindow } from './modal-window';
 
 /**
+ * The URL without its fragment, which is what decides whether the screen changed.
+ *
+ * An anchor moves the reader inside the screen the dialog belongs to; it does not replace it. A
+ * sidebar that writes the anchor of the section on screen as the reader scrolls is ordinary, and
+ * without this it would close every dialog a moment after it opened.
+ */
+function withoutFragment(url: string): string {
+	const fragment = url.indexOf('#');
+	return fragment === -1 ? url : url.slice(0, fragment);
+}
+
+/**
  * A service that manages the stack of currently active modal windows.
  * It is responsible for creating, attaching, and orchestrating the rendering
  * of the modal dialogue, its backdrop, and its content.
@@ -43,6 +55,9 @@ export class HubModalStack {
 	private _activeWindowCmptHasChanged = new Subject<void>();
 	private _ariaHiddenValues: Map<Element, string | null> = new Map();
 	private _scrollBarRestoreFn: null | (() => void) = null;
+	/** How far a dialog and its backdrop are lifted over the level below: one each. */
+	private static readonly ZINDEX_STEP = 2;
+
 	private _modalRefs: HubModalRef[] = [];
 	private _closeOnNavigation = new WeakSet<HubModalRef>();
 	private _watchingUrl = false;
@@ -106,9 +121,14 @@ export class HubModalStack {
 		const environmentInjector = contentInjector.get(EnvironmentInjector, null) || this._environmentInjector;
 		const contentRef = this._getContentRef(contentInjector, environmentInjector, content, activeModal, options);
 
+		// Read before the new reference joins them: it is how many dialogs this one opens over.
+		const level = this._modalRefs.length;
+
 		const backdropCmptRef: ComponentRef<HubModalBackdrop> | undefined =
 			options.backdrop !== false ? this._attachBackdrop(containerEl) : undefined;
 		const windowCmptRef: ComponentRef<HubModalWindow> = this._attachWindowComponent(containerEl, contentRef.nodes, options);
+
+		this._stack(level, windowCmptRef.location.nativeElement, backdropCmptRef?.location.nativeElement);
 		const hubModalRef: HubModalRef = new HubModalRef(windowCmptRef, contentRef, backdropCmptRef, options.beforeDismiss);
 
 		this._registerModalRef(hubModalRef);
@@ -180,6 +200,33 @@ export class HubModalStack {
 	 */
 	hasOpenModals(): boolean {
 		return this._modalRefs.length > 0;
+	}
+
+	/**
+	 * Lifts a dialog and its backdrop above the ones already open.
+	 *
+	 * Every dialog used to be painted at the same height, and so was every backdrop, so the
+	 * second backdrop landed *under* the first dialog: the new one floated over a page that
+	 * was not dimmed, and what it covered still looked reachable. Two steps per level keeps
+	 * each backdrop between the dialog below it and its own.
+	 *
+	 * The first dialog is left untouched on purpose. Writing the value inline would override
+	 * a `--hub-modal-zindex` the application themed, and at level zero there is nothing to
+	 * lift it above.
+	 */
+	private _stack(level: number, windowEl: HTMLElement, backdropEl?: HTMLElement) {
+		if (level === 0) {
+			return;
+		}
+
+		const lift = level * HubModalStack.ZINDEX_STEP;
+		const base = 'var(--hub-modal-zindex-base, var(--hub-sys-zindex-modal, 1055))';
+
+		windowEl.style.setProperty('--hub-modal-zindex', `calc(${base} + ${lift})`);
+		// Set on the element rather than left to the `:root` rule that derives it: a custom
+		// property is substituted where it is declared, so the derived value inherits already
+		// computed and never sees the window's own.
+		backdropEl?.style.setProperty('--hub-modal-backdrop-zindex', `calc(${base} + ${lift - 1})`);
 	}
 
 	private _attachBackdrop(containerEl: Element): ComponentRef<HubModalBackdrop> {
@@ -354,7 +401,19 @@ export class HubModalStack {
 		}
 
 		this._watchingUrl = true;
-		this._destroyRef.onDestroy(this._location.onUrlChange(() => this._dismissOnNavigation()));
+		let previous = withoutFragment(this._location.path(true));
+
+		this._destroyRef.onDestroy(
+			this._location.onUrlChange((url) => {
+				const next = withoutFragment(url);
+				if (next === previous) {
+					return;
+				}
+
+				previous = next;
+				this._dismissOnNavigation();
+			})
+		);
 	}
 
 	/**

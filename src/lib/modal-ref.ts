@@ -78,6 +78,7 @@ const WINDOW_ATTRIBUTES: string[] = [
 	'ariaLabelledBy',
 	'ariaDescribedBy',
 	'closeAriaLabel',
+	'closeButton',
 	'backdrop',
 	'centered',
 	'placement',

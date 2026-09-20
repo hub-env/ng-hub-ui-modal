@@ -43,6 +43,22 @@ export interface HubModalOptions<D = unknown> {
 	closeAriaLabel?: string;
 
 	/**
+	 * Whether the dialog draws the dismiss button in its own header.
+	 *
+	 * `false` for a dialog there is no free way out of — a choice that has to be made, a
+	 * wizard that provisions something on its way out and says so on the button that does
+	 * it. The button is left out of the DOM rather than hidden, because a button hidden
+	 * with CSS is still announced by a screen reader and still reached by the tab order,
+	 * which is the hiding that consumers were writing by hand.
+	 *
+	 * It governs the built-in button alone: `backdrop: 'static'` and `keyboard: false` are
+	 * the other two ways out, and each is still its own decision.
+	 *
+	 * Default value is `true`.
+	 */
+	closeButton?: boolean;
+
+	/**
 	 * If `true`, the backdrop element will be created for a given modal.
 	 *
 	 * Alternatively, specify `'static'` for a backdrop which doesn't close the modal on click.
@@ -103,9 +119,9 @@ export interface HubModalOptions<D = unknown> {
 	 * page stopped responding. Closing it is what a reader expects and what the CDK's dialog has
 	 * done for years, so it is the default here too.
 	 *
-	 * Every URL change counts, including one that only rewrites a query parameter, because that
-	 * is still the screen changing under the dialog. A wizard that drives navigation itself, and
-	 * stays open across it, is the case for turning this off.
+	 * A change of path or query string counts, because either one replaces the screen under the
+	 * dialog. A change of anchor does not: it moves the reader inside that same screen. A wizard
+	 * that drives navigation itself, and stays open across it, is the case for turning this off.
 	 *
 	 * The dismissal reason is `ModalDismissReasons.NAVIGATION`.
 	 *
@@ -287,6 +303,7 @@ export class HubModalConfig implements Required<HubModalOptions> {
 	ariaLabelledBy!: string;
 	ariaDescribedBy!: string;
 	closeAriaLabel = 'Close';
+	closeButton = true;
 	backdrop: boolean | 'static' = true;
 	beforeDismiss!: () => boolean | Promise<boolean>;
 	centered!: boolean;

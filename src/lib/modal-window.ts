@@ -59,13 +59,15 @@ import { HubModalPlacement } from './modal-placement';
 				} @else {
 					<div class="hub-modal__header">
 						<div #headingContainer class="hub-modal__heading"></div>
-						<button
-							#closeButton
-							type="button"
-							class="hub-modal__close"
-							[attr.aria-label]="closeAriaLabel()"
-							(click)="dismiss(null)"
-						></button>
+						@if (closeButton()) {
+							<button
+								#closeButton
+								type="button"
+								class="hub-modal__close"
+								[attr.aria-label]="closeAriaLabel()"
+								(click)="dismiss(null)"
+							></button>
+						}
 					</div>
 					<div #bodyContainer class="hub-modal__body"></div>
 					<div #footerContainer class="hub-modal__footer"></div>
@@ -124,6 +126,15 @@ export class HubModalWindow implements OnInit, OnDestroy {
 	 * the only name assistive technology can read.
 	 */
 	readonly closeAriaLabel = input<string>('Close');
+
+	/**
+	 * Whether the built-in header draws its dismiss button.
+	 *
+	 * `false` leaves it out of the DOM rather than hiding it, which is the whole point: a
+	 * button hidden with CSS is still announced by a screen reader and still reached by the
+	 * tab order, so the dialog would keep offering a way out it does not have.
+	 */
+	readonly closeButton = input<boolean>(true);
 
 	/**
 	 * Configures the presence and behavior of the modal backdrop (`true`, `false`, or `'static'`).

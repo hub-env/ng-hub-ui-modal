@@ -51,7 +51,12 @@ body.hub-modal-open {
  * its own from it, and a stacking order is a document-wide decision in any case.
  */
 :root {
-	--hub-modal-zindex: var(--hub-sys-zindex-modal, 1055);
+	// The floor the whole family sits on. A dialog opened over another is lifted two steps
+	// above it, and the stack writes that lift on the element as it attaches it, so the
+	// arithmetic has to start somewhere it can name: this is that somewhere. Theme this one
+	// to move every level at once; `--hub-modal-zindex` still moves the first on its own.
+	--hub-modal-zindex-base: var(--hub-sys-zindex-modal, 1055);
+	--hub-modal-zindex: var(--hub-modal-zindex-base, var(--hub-sys-zindex-modal, 1055));
 	--hub-modal-backdrop-zindex: calc(var(--hub-modal-zindex, var(--hub-sys-zindex-modal, 1055)) - 1);
 	--hub-modal-backdrop-bg: var(--hub-ref-color-black, #000000);
 	--hub-modal-backdrop-opacity: var(--hub-sys-opacity-50, 0.5);
