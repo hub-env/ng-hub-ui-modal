@@ -28,7 +28,10 @@
 		"component",
 		"customizable",
 		"decoupled",
-		"independent"
+		"independent",
+		"ng-hub-ui",
+		"signals",
+		"standalone"
 	],
 	"description": "Standalone, signal-based modal/dialog service and components for Angular (ng-hub-ui family).",
 	"repository": {
