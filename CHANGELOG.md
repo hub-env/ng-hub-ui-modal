@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [22.13.0] - 2026-09-20
+
+### Added
+
+- **`closeOnNavigation`, on by default: a dialog no longer outlives the screen that opened it.**
+  An open dialog used to survive the route change. The new screen rendered behind its backdrop,
+  which swallowed every click, and nothing on the page said why — Escape still closed it, so the
+  interface looked frozen rather than blocked. Any change to the application's URL now dismisses
+  the dialog with `ModalDismissReasons.NAVIGATION`, the reason added in this release. Pass
+  `closeOnNavigation: false` for a dialog that drives navigation itself and has to stay open
+  across it. The listener is `Location.onUrlChange`, so a link the router resolves counts as much
+  as the browser's back button, and it is skipped entirely where `Location` is not provided.
+
+### Fixed
+
+- **An offcanvas drawer stopped short of the floor.** The viewport cap on the dialog's content
+  still discounted the 3.5rem a floating dialog keeps around itself, so a drawer opened from the
+  start or end edge left a strip of page showing underneath and its footer floated above the
+  bottom edge — the defect the mode exists to remove, on the side it is hardest to spot. The
+  discount is zero in offcanvas mode now, which is what made it a variable in the first place.
+  Drawers from the top and bottom edges were never affected, and a floating dialog keeps its
+  margin untouched.
+
+### Changed
+
+- **Opening a dialog no longer leaves it to the application to close it on navigation.** The
+  behaviour change is listed in `BREAKING_CHANGES.md`. Applications carrying the usual workaround
+  — dismissing every dialog on `NavigationStart` — can drop it; the two together are harmless,
+  the dialog simply closes on whichever fires first.
+
 ## [22.12.1] - 2026-09-16
 
 ### Changed

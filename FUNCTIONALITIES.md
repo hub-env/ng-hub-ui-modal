@@ -37,6 +37,7 @@ This table details the functionalities of the `ng-hub-ui-modal` library and indi
 |                   | `closeAriaLabel` — name of the built-in close button         |       ✅        |
 | **Behavior**      | `backdrop` (true, false, 'static')                           |       ✅        |
 |                   | `keyboard` (Esc to close)                                    |       ✅        |
+|                   | `closeOnNavigation` (closes when the URL changes)            |       ✅        |
 |                   | `animation` (fade in/out)                                    |       ❌        |
 |                   | `beforeDismiss` guard                                        |       ❌        |
 |                   | `container` / `injector`                                     |       ❌        |

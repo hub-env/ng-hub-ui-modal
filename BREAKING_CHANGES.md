@@ -6,6 +6,42 @@ The major version tracks the Angular major this library targets, so it cannot al
 breaking change ships in a **minor** release and is announced here. This file — not the version
 number — is the warning.
 
+## [22.13.0] - 2026-09-20
+
+### A dialog closes when the application navigates
+
+- **Change**: `closeOnNavigation` ships as `true`. Every change to the application's URL — a route,
+  a query parameter, the browser's back button — dismisses the open dialogs with
+  `ModalDismissReasons.NAVIGATION`. Until now they stayed open.
+
+- **Impact — a dialog meant to survive navigation closes.** A wizard that advances by navigating,
+  a dialog that writes its state into the query string, a preview that keeps a deep link in the
+  address bar: each of these navigates while open, and each now closes on the first step. Pass
+  `closeOnNavigation: false` when opening it, or set the default back for the whole application on
+  `HubModalConfig`.
+
+- **Why it ships on by default**: left open, the dialog covers a screen it has nothing to do with,
+  and its backdrop swallows every click on that screen. Escape still worked, which is what made it
+  hard to read as a dialog problem at all. The CDK's dialog has closed on navigation by default for
+  years, and an application that wanted the old behaviour had to write the workaround itself —
+  which is the wrong way round for a default.
+
+- **Migration**:
+
+    ```ts
+    // Before — the dialog survived the navigation it triggered
+    this.modal.open(WizardComponent);
+
+    // After — say so
+    this.modal.open(WizardComponent, { closeOnNavigation: false });
+    ```
+
+    Or, once, for the whole application:
+
+    ```ts
+    inject(HubModalConfig).closeOnNavigation = false;
+    ```
+
 ## [22.12.0] - 2026-09-13
 
 ### Projected header nodes move into `.hub-modal__heading`
@@ -99,7 +135,7 @@ keeps the win and drops the price.
   dialog element itself, matched through a zero-specificity wrapper. Six tokens stay on `:root`,
   and only those: `--hub-modal-zindex`, `--hub-modal-backdrop-zindex`, `--hub-modal-backdrop-bg`,
   `--hub-modal-backdrop-opacity`, `--hub-modal-backdrop-opacity-hidden` and
-  `--hub-modal-backdrop-transition`. No value changes as part of *this* move; the one default
+  `--hub-modal-backdrop-transition`. No value changes as part of _this_ move; the one default
   whose value does change in 22.10.0 is `--hub-modal-accent-bar-width`, and it has its own
   section below.
 

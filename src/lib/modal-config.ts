@@ -96,6 +96,24 @@ export interface HubModalOptions<D = unknown> {
 	offcanvas?: boolean;
 
 	/**
+	 * Dismisses the modal when the application navigates away from the screen that opened it.
+	 *
+	 * A dialog belongs to the screen underneath it. Left alone it outlives that screen: the new
+	 * one renders behind a backdrop that swallows every click, and nothing on it explains why the
+	 * page stopped responding. Closing it is what a reader expects and what the CDK's dialog has
+	 * done for years, so it is the default here too.
+	 *
+	 * Every URL change counts, including one that only rewrites a query parameter, because that
+	 * is still the screen changing under the dialog. A wizard that drives navigation itself, and
+	 * stays open across it, is the case for turning this off.
+	 *
+	 * The dismissal reason is `ModalDismissReasons.NAVIGATION`.
+	 *
+	 * Default value is `true`.
+	 */
+	closeOnNavigation?: boolean;
+
+	/**
 	 * A selector specifying the element all new modal windows should be appended to.
 	 * Since v5.3.0 it is also possible to pass the reference to an `HTMLElement`.
 	 *
@@ -272,6 +290,7 @@ export class HubModalConfig implements Required<HubModalOptions> {
 	backdrop: boolean | 'static' = true;
 	beforeDismiss!: () => boolean | Promise<boolean>;
 	centered!: boolean;
+	closeOnNavigation = true;
 	placement: HubModalPlacement = HubModalPlacement.Center;
 	offcanvas = false;
 	container!: string | HTMLElement;

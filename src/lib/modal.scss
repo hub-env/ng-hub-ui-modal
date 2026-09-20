@@ -706,6 +706,14 @@ body.hub-modal-open {
 			max-height: var(--hub-modal-offcanvas-height);
 		}
 
+		// No margin around a drawer, so nothing to discount from the viewport cap. Left at its
+		// default the cap kept the floating dialog's 3.5rem, and the drawer stopped that far
+		// short of the floor with a strip of page showing under it — the exact defect the mode
+		// exists to remove, on the edge it is hardest to notice.
+		.hub-modal__dialog {
+			--hub-modal-dialog-inset: 0px;
+		}
+
 		// Stretched, not sized by its content: nothing in a floating dialog says the content
 		// should fill its container, because a floating one never does.
 		.hub-modal__content {

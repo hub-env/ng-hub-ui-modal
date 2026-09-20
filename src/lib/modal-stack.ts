@@ -1,8 +1,9 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, Location } from '@angular/common';
 import {
 	ApplicationRef,
 	ComponentRef,
 	createComponent,
+	DestroyRef,
 	EnvironmentInjector,
 	EventEmitter,
 	inject,
@@ -17,6 +18,7 @@ import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { HubModalBackdrop } from './modal-backdrop';
 import { HubModalOptions, HubModalUpdatableOptions } from './modal-config';
+import { ModalDismissReasons } from './modal-dismiss-reasons';
 import { HUB_MODAL_DATA, HubActiveModal, HubModalRef } from './modal-ref';
 import { HubModalWindow } from './modal-window';
 
@@ -33,10 +35,17 @@ export class HubModalStack {
 	private _document = inject(DOCUMENT);
 	private _scrollBar = inject(ScrollBar);
 
+	// Optional: the library has to work in an application with no router, where `Location`
+	// has no strategy to read from and is not provided at all.
+	private _location = inject(Location, { optional: true });
+	private _destroyRef = inject(DestroyRef);
+
 	private _activeWindowCmptHasChanged = new Subject<void>();
 	private _ariaHiddenValues: Map<Element, string | null> = new Map();
 	private _scrollBarRestoreFn: null | (() => void) = null;
 	private _modalRefs: HubModalRef[] = [];
+	private _closeOnNavigation = new WeakSet<HubModalRef>();
+	private _watchingUrl = false;
 	private _windowCmpts: ComponentRef<HubModalWindow>[] = [];
 	private _activeInstances: EventEmitter<HubModalRef[]> = new EventEmitter();
 
@@ -104,6 +113,11 @@ export class HubModalStack {
 
 		this._registerModalRef(hubModalRef);
 		this._registerWindowCmpt(windowCmptRef);
+
+		if (options.closeOnNavigation !== false) {
+			this._closeOnNavigation.add(hubModalRef);
+			this._watchUrlChanges();
+		}
 
 		// We have to cleanup DOM after the last modal when BOTH 'hidden' was emitted and 'result' promise was resolved:
 		// - with animations OFF, 'hidden' emits synchronously, then 'result' is resolved asynchronously
@@ -318,6 +332,42 @@ export class HubModalStack {
 			}
 		});
 		this._ariaHiddenValues.clear();
+	}
+
+	/**
+	 * Starts listening for URL changes, so an open dialog does not outlive the screen that
+	 * opened it.
+	 *
+	 * `Location.onUrlChange` rather than `Location.subscribe`: the latter only hears the browser's
+	 * own back and forward, and the navigation that strands a dialog is usually a link the reader
+	 * clicked, which the router resolves without any of that.
+	 *
+	 * One listener for the whole stack, registered once and dropped only when the application is
+	 * torn down. One per dialog is what this looked like first, and it does not work: `Location`
+	 * notifies with a `forEach` over the live array, and a dialog that unsubscribes while being
+	 * dismissed shifts the indices under that walk, so the listener sitting after it is skipped —
+	 * silently, and not necessarily one of ours.
+	 */
+	private _watchUrlChanges() {
+		if (this._watchingUrl || !this._location) {
+			return;
+		}
+
+		this._watchingUrl = true;
+		this._destroyRef.onDestroy(this._location.onUrlChange(() => this._dismissOnNavigation()));
+	}
+
+	/**
+	 * Dismisses every open dialog that did not opt out of closing on navigation.
+	 *
+	 * Walks a copy: a dismissal takes its own reference out of `_modalRefs` as it goes.
+	 */
+	private _dismissOnNavigation() {
+		for (const hubModalRef of [...this._modalRefs]) {
+			if (this._closeOnNavigation.has(hubModalRef)) {
+				hubModalRef.dismiss(ModalDismissReasons.NAVIGATION);
+			}
+		}
 	}
 
 	private _registerModalRef(hubModalRef: HubModalRef) {

@@ -1,4 +1,5 @@
 export enum ModalDismissReasons {
 	BACKDROP_CLICK,
-	ESC
+	ESC,
+	NAVIGATION
 }
