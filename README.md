@@ -4,12 +4,9 @@
 
 [![NPM Version](https://img.shields.io/npm/v/ng-hub-ui-modal.svg)](https://www.npmjs.com/package/ng-hub-ui-modal)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Angular](https://img.shields.io/badge/Angular-21-red.svg)](https://angular.io)
+[![Angular](https://img.shields.io/badge/Angular-22-red.svg)](https://angular.dev)
 
 > A standalone, fully-featured Angular modal library with flexible content projection, placement support, and full CSS variable theming. No Bootstrap or ng-bootstrap dependency required.
-
-> **⚠️ WARNING: BREAKING CHANGES IN VERSION 21.0.0**
-> If you are upgrading from `1.x.x` to `21.x.x` and you have overridden the `.modal` or `.modal-dialog` CSS classes in your global stylesheets, please review the [BREAKING_CHANGES.md](./BREAKING_CHANGES.md) document to migrate your styles to the new `hub-modal` BEM classes.
 
 ---
 
@@ -55,6 +52,7 @@ This library is part of the **ng-hub-ui** ecosystem:
 
 - [Features](#features)
 - [Installation](#installation)
+- [Upgrading from 1.x](#upgrading-from-1x)
 - [Quick Start](#quick-start)
 - [Examples](#examples)
     - [Open with TemplateRef](#open-with-templateref)
@@ -122,6 +120,12 @@ resolve `ng-hub-ui-utils` at build time.
 > It is declared as an **optional** peer (`>=22.0.0`): every token this library reads is written
 > with its own fallback value, so a project that themes on its own installs nothing and sees no
 > warning.
+
+---
+
+## Upgrading from 1.x
+
+If you are coming from `1.x` and you overrode the `.modal` or `.modal-dialog` CSS classes in your global stylesheets, read [BREAKING_CHANGES.md](./BREAKING_CHANGES.md) first: `21.0.0` moved the dialog to the `hub-modal` BEM classes, so those overrides no longer match anything.
 
 ---
 

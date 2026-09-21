@@ -4,12 +4,9 @@
 
 [![NPM Version](https://img.shields.io/npm/v/ng-hub-ui-modal.svg)](https://www.npmjs.com/package/ng-hub-ui-modal)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Angular](https://img.shields.io/badge/Angular-21-red.svg)](https://angular.io)
+[![Angular](https://img.shields.io/badge/Angular-22-red.svg)](https://angular.dev)
 
 > Biblioteca de modales standalone para Angular con proyección de contenido flexible, soporte de posición (placement), y tematización completa mediante variables CSS. Sin dependencias de Bootstrap ni ng-bootstrap.
-
-> **⚠️ AVISO: CAMBIOS QUE ROMPEN COMPATIBILIDAD EN VERSIÓN 21.0.0**
-> Si estás actualizando desde `1.x.x` a `21.x.x` y has sobrescrito las clases CSS `.modal` o `.modal-dialog` en tus hojas de estilo globales, consulta [BREAKING_CHANGES.md](./BREAKING_CHANGES.md) para migrar al nuevo esquema BEM `hub-modal`.
 
 ---
 
@@ -55,6 +52,7 @@ Esta librería forma parte del ecosistema **ng-hub-ui**:
 
 - [Características](#características)
 - [Instalación](#instalación)
+- [Actualizar desde 1.x](#actualizar-desde-1x)
 - [Inicio rápido](#inicio-rápido)
 - [Ejemplos](#ejemplos)
 - [Referencia de API](#referencia-de-api)
@@ -102,6 +100,12 @@ fallarán al resolver `ng-hub-ui-utils` al compilar.
 > Está declarada como peer **opcional** (`>=22.0.0`): todos los tokens que lee esta librería llevan
 > escrito su propio valor de reserva, así que quien tematiza por su cuenta no instala nada y no ve
 > ningún aviso.
+
+---
+
+## Actualizar desde 1.x
+
+Si vienes de `1.x` y sobrescribiste las clases CSS `.modal` o `.modal-dialog` en tus hojas de estilo globales, lee antes [BREAKING_CHANGES.md](./BREAKING_CHANGES.md): la versión `21.0.0` pasó el diálogo al esquema BEM `hub-modal`, así que esas sobrescrituras ya no casan con nada.
 
 ---
 

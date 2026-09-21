@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [22.14.2] - 2026-09-21
+
+### Changed
+
+- **The README opens with what the library does.** The Angular badge read 21 while npm served
+  22.14.1, and the migration note for 21.0.0 sat above the fold, so the first thing a reader met on
+  the package page was a breaking change from two Angular lines back. The badge now reads 22, and
+  the note has its own `Upgrading from 1.x` section after the installation instructions, where
+  somebody actually upgrading will look for it. `README.es.md` follows the same shape.
+  Documentation only: no code, types or styles change.
+
 ## [22.14.1] - 2026-09-20
 
 ### Changed
