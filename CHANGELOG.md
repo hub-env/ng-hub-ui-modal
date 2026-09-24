@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [22.14.4] - 2026-09-24
+
+### Fixed
+
+- **A dialog that goes fullscreen below a breakpoint now reaches the bottom of the screen.**
+  `fullscreen: 'md'` gives the dialog the whole viewport and no margins, but the rule left
+  `--hub-modal-dialog-inset` at the 3.5rem a floating dialog discounts for the margins it floats
+  inside. The content was therefore capped at `100dvh - 3.5rem` and stopped 56px above the floor,
+  showing a strip of the page under a dialog that had already taken the screen — and what sat over
+  that strip was the footer, which in a wizard is the button that continues it. The breakpoint
+  variants zero the inset, as `fullscreen: true` and the offcanvas mode already did.
+
 ## [22.14.3] - 2026-09-23
 
 ### Changed

@@ -740,6 +740,13 @@ body.hub-modal-open {
 	@media (max-width: $breakpoint-width) {
 		.hub-modal {
 			&__dialog--fullscreen-#{$breakpoint-name}-down {
+				// Same reading as `--fullscreen`, which this is below the breakpoint: the dialog
+				// covers the viewport, so there is no margin to discount from the cap. Left at
+				// its default the content kept the floating dialog's 3.5rem and stopped that far
+				// above the floor — a strip of page under a dialog that had already taken the
+				// screen, with the footer and its buttons sitting over it.
+				--hub-modal-dialog-inset: 0px;
+
 				width: 100%;
 				max-width: 100%;
 				height: 100%;
