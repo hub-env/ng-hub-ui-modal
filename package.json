@@ -1,6 +1,6 @@
 {
 	"name": "ng-hub-ui-modal",
-	"version": "22.14.4",
+	"version": "22.14.5",
 	"peerDependencies": {
 		"@angular/common": ">=17.3.0",
 		"@angular/core": ">=17.3.0",
