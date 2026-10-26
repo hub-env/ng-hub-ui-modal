@@ -35,7 +35,7 @@ The fallback chain follows: `component -> sys -> ref -> literal`.
 | `--hub-modal-placement-end-margin` | `var(--hub-modal-placement-end-margin-top) var(--hub-modal-placement-end-margin-right) var(--hub-modal-placement-end-margin-bottom) var(--hub-modal-placement-end-margin-left)` |
 | `--hub-modal-placement-top-margin` | `var(--hub-modal-placement-top-margin-top) var(--hub-modal-placement-top-margin-right) var(--hub-modal-placement-top-margin-bottom) var(--hub-modal-placement-top-margin-left)` |
 | `--hub-modal-placement-bottom-margin` | `var(--hub-modal-placement-bottom-margin-top) var(--hub-modal-placement-bottom-margin-right) var(--hub-modal-placement-bottom-margin-bottom) var(--hub-modal-placement-bottom-margin-left)` |
-| `--hub-modal-color` | `var(--hub-sys-text-primary, #212529)` |
+| `--hub-modal-color` | `var(--hub-sys-text-body, #212529)` |
 | `--hub-modal-bg` | `var(--hub-sys-surface-page, #ffffff)` |
 | `--hub-modal-border-color` | `var(--hub-sys-border-color-default, #dee2e6)` |
 | `--hub-modal-border-width` | `var(--hub-ref-border-width, 1px)` |
@@ -78,7 +78,7 @@ Applied only when a `variant` is set (e.g. `{ variant: 'danger' }` or `windowCla
 | `--hub-modal-title-line-height` | `var(--hub-ref-line-height-base, 1.5)` |
 | `--hub-modal-title-margin-x` | `0` |
 | `--hub-modal-title-margin-y` | `0` |
-| `--hub-modal-title-color` | `var(--hub-modal-color, var(--hub-sys-text-primary, #212529))` |
+| `--hub-modal-title-color` | `var(--hub-modal-color, var(--hub-sys-text-body, #212529))` |
 
 ### Body and footer
 
@@ -97,7 +97,7 @@ Applied only when a `variant` is set (e.g. `{ variant: 'danger' }` or `windowCla
 
 | Variable name | Initial value |
 | --- | --- |
-| `--hub-modal-close-color` | `var(--hub-sys-text-primary, #212529)` |
+| `--hub-modal-close-color` | `var(--hub-sys-text-body, #212529)` |
 | `--hub-modal-close-opacity` | `0.5` |
 | `--hub-modal-close-hover-opacity` | `0.75` |
 | `--hub-modal-close-padding-x` | `0` |

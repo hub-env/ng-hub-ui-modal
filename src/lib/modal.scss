@@ -160,7 +160,7 @@ body.hub-modal-open {
 	--hub-modal-placement-bottom-margin: var(--hub-modal-placement-bottom-margin-top)
 		var(--hub-modal-placement-bottom-margin-right) var(--hub-modal-placement-bottom-margin-bottom)
 		var(--hub-modal-placement-bottom-margin-left);
-	--hub-modal-color: var(--hub-sys-text-primary, #212529);
+	--hub-modal-color: var(--hub-sys-text-body, #212529);
 	--hub-modal-bg: var(--hub-sys-surface-page, #ffffff);
 	--hub-modal-border-color: var(--hub-sys-border-color-default, #dee2e6);
 	--hub-modal-border-width: var(--hub-ref-border-width, 1px);
@@ -193,7 +193,7 @@ body.hub-modal-open {
 	--hub-modal-title-margin-x: 0;
 	--hub-modal-title-margin-y: 0;
 	// Title colour — neutral by default; a `variant` re-points it to the accent.
-	--hub-modal-title-color: var(--hub-modal-color, var(--hub-sys-text-primary, #212529));
+	--hub-modal-title-color: var(--hub-modal-color, var(--hub-sys-text-body, #212529));
 	--hub-modal-body-padding-x: var(--hub-modal-padding-x);
 	--hub-modal-body-padding-y: var(--hub-modal-padding-y);
 	--hub-modal-footer-padding-x: var(--hub-modal-padding-x);
@@ -202,7 +202,7 @@ body.hub-modal-open {
 	--hub-modal-footer-bg: var(--hub-modal-bg, var(--hub-sys-surface-page, #ffffff));
 	--hub-modal-footer-border-color: var(--hub-sys-border-color-default, #dee2e6);
 	--hub-modal-footer-border-width: var(--hub-ref-border-width, 1px);
-	--hub-modal-close-color: var(--hub-sys-text-primary, #212529);
+	--hub-modal-close-color: var(--hub-sys-text-body, #212529);
 	--hub-modal-close-size: var(--hub-ref-font-size-lg, 1.25rem);
 	--hub-modal-close-line-height: 1;
 	--hub-modal-close-padding-x: 0;
@@ -242,7 +242,7 @@ body.hub-modal-open {
 	outline: 0;
 	pointer-events: auto;
 	z-index: var(--hub-modal-zindex, var(--hub-sys-zindex-modal, 1055));
-	color: var(--hub-modal-color, var(--hub-sys-text-primary, #212529));
+	color: var(--hub-modal-color, var(--hub-sys-text-body, #212529));
 
 	&--placement-top,
 	&--placement-bottom {
@@ -348,7 +348,7 @@ body.hub-modal-open {
 		width: 100%;
 		pointer-events: auto;
 		outline: 0;
-		color: var(--hub-modal-color, var(--hub-sys-text-primary, #212529));
+		color: var(--hub-modal-color, var(--hub-sys-text-body, #212529));
 		background-color: var(--hub-modal-bg, var(--hub-sys-surface-page, #ffffff));
 		border: var(--hub-modal-border-width, var(--hub-ref-border-width, 1px)) solid
 			var(--hub-modal-border-color, var(--hub-sys-border-color-default, #dee2e6));
@@ -528,7 +528,7 @@ body.hub-modal-open {
 	// Both are matched. Neither is going away while consumers own the markup.
 	&__header .modal-title,
 	&__header &__title {
-		color: var(--hub-modal-title-color, var(--hub-modal-color, var(--hub-sys-text-primary, #212529)));
+		color: var(--hub-modal-title-color, var(--hub-modal-color, var(--hub-sys-text-body, #212529)));
 		font-size: var(--hub-modal-title-font-size, var(--hub-ref-font-size-lg, 1.25rem));
 		font-weight: var(--hub-modal-title-font-weight, var(--hub-ref-font-weight-medium, 500));
 		line-height: var(--hub-modal-title-line-height, var(--hub-ref-line-height-base, 1.5));
@@ -553,7 +553,7 @@ body.hub-modal-open {
 		gap: var(--hub-modal-footer-gap, var(--hub-ref-space-2, 0.5rem));
 		padding: var(--hub-modal-footer-padding-y, var(--hub-ref-space-3, 1rem))
 			var(--hub-modal-footer-padding-x, var(--hub-ref-space-3, 1rem));
-		color: var(--hub-modal-color, var(--hub-sys-text-primary, #212529));
+		color: var(--hub-modal-color, var(--hub-sys-text-body, #212529));
 		background-color: var(--hub-modal-footer-bg, var(--hub-modal-bg, var(--hub-sys-surface-page, #ffffff)));
 		border-top: var(--hub-modal-footer-border-width, var(--hub-ref-border-width, 1px)) solid
 			var(--hub-modal-footer-border-color, var(--hub-sys-border-color-default, #dee2e6));
@@ -585,7 +585,7 @@ body.hub-modal-open {
 		background: transparent;
 		border: 0;
 		cursor: pointer;
-		color: var(--hub-modal-close-color, var(--hub-sys-text-primary, #212529));
+		color: var(--hub-modal-close-color, var(--hub-sys-text-body, #212529));
 		opacity: var(--hub-modal-close-opacity, 0.5);
 
 		&::before {
