@@ -27,6 +27,49 @@ describe('hub-modal-dialog', () => {
 		});
 	});
 
+	describe('content resize observation', () => {
+		let notify: () => void;
+		let disconnect: ReturnType<typeof vi.fn>;
+		let OriginalObserver: typeof ResizeObserver;
+
+		beforeEach(() => {
+			OriginalObserver = window.ResizeObserver;
+			disconnect = vi.fn();
+			window.ResizeObserver = class {
+				constructor(callback: () => void) {
+					notify = callback;
+				}
+				observe() {}
+				disconnect = disconnect;
+			} as unknown as typeof ResizeObserver;
+		});
+
+		afterEach(() => {
+			window.ResizeObserver = OriginalObserver;
+		});
+
+		it('defers the measurement to the next frame and drops a pending one on destroy', async () => {
+			fixture.detectChanges();
+			await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+
+			const win = fixture.componentInstance as unknown as { _onContentResized: (el: HTMLElement) => void };
+			const measure = vi.spyOn(win, '_onContentResized').mockImplementation(() => {});
+
+			notify();
+			notify();
+			expect(measure).not.toHaveBeenCalled();
+
+			await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+			expect(measure).toHaveBeenCalledTimes(1);
+
+			notify();
+			fixture.destroy();
+			await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
+			expect(measure).toHaveBeenCalledTimes(1);
+			expect(disconnect).toHaveBeenCalled();
+		});
+	});
+
 	describe('basic rendering functionality', () => {
 		it('should render default modal window', () => {
 			fixture.detectChanges();

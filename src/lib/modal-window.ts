@@ -108,6 +108,7 @@ export class HubModalWindow implements OnInit, OnDestroy {
 	private _resizeObserver: ResizeObserver | null = null;
 	private _lastHeight: number | null = null;
 	private _resizeAnimation: Animation | null = null;
+	private _resizeFrame: number | null = null;
 
 	/**
 	 * Identifier to apply to the `aria-labelledby` attribute of the modal.
@@ -345,7 +346,15 @@ export class HubModalWindow implements OnInit, OnDestroy {
 		this._disableEventHandling();
 		this._resizeObserver?.disconnect();
 		this._resizeObserver = null;
+		this._cancelResizeFrame();
 		this._resizeAnimation?.cancel();
+	}
+
+	private _cancelResizeFrame(): void {
+		if (this._resizeFrame !== null) {
+			cancelAnimationFrame(this._resizeFrame);
+			this._resizeFrame = null;
+		}
 	}
 
 	/**
@@ -365,27 +374,38 @@ export class HubModalWindow implements OnInit, OnDestroy {
 			return;
 		}
 
+		// The body runs a frame later: animating the height inside the callback changes layout
+		// again before the browser finishes delivering observations, which raises «ResizeObserver
+		// loop completed with undelivered notifications» on every growth.
 		this._resizeObserver = new ResizeObserver(() => {
-			// While our own animation drives the box, every one of its frames comes back through
-			// here. Reacting would cancel and restart it on each frame, which reads as a stutter
-			// rather than a movement.
-			if (this._resizeAnimation) {
-				return;
-			}
-
-			const next = content.getBoundingClientRect().height;
-			const previous = this._lastHeight;
-			this._lastHeight = next;
-
-			// The first callback is the modal arriving, which the entry transition already owns.
-			if (previous === null || Math.abs(next - previous) < 1 || !this._shouldAnimateResize()) {
-				return;
-			}
-
-			this._animateHeight(content, previous, next);
+			this._cancelResizeFrame();
+			this._resizeFrame = requestAnimationFrame(() => {
+				this._resizeFrame = null;
+				this._onContentResized(content);
+			});
 		});
 
 		this._resizeObserver.observe(content);
+	}
+
+	private _onContentResized(content: HTMLElement): void {
+		// While our own animation drives the box, every one of its frames comes back through
+		// here. Reacting would cancel and restart it on each frame, which reads as a stutter
+		// rather than a movement.
+		if (this._resizeAnimation) {
+			return;
+		}
+
+		const next = content.getBoundingClientRect().height;
+		const previous = this._lastHeight;
+		this._lastHeight = next;
+
+		// The first callback is the modal arriving, which the entry transition already owns.
+		if (previous === null || Math.abs(next - previous) < 1 || !this._shouldAnimateResize()) {
+			return;
+		}
+
+		this._animateHeight(content, previous, next);
 	}
 
 	/** Honours both the modal's own opt-out and the reader's. */

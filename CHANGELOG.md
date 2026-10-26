@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [22.14.6] - 2026-10-18
+
+### Fixed
+
+- **A modal whose content grows no longer raises «ResizeObserver loop completed with undelivered
+  notifications».** The height animation started inside the observer callback, which changed layout
+  before the browser had finished delivering observations, so every growth (a field error appearing
+  on blur, for instance) reported the error. The callback now measures one frame later, cancelling a
+  pending frame on each new notification and on destroy. It never showed with reduced motion, which
+  skips the animation.
+
 ## [22.14.5] - 2026-09-28
 
 ### Changed
